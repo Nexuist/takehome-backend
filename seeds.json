@@ -2,11 +2,48 @@
   {
     "username": "andi",
     "id": 0,
+    "email": "test@test.com",
+    "password": "EF7797E13D3A75526946A3BCF00DAEC9FC9C9C4D51DDC7CC5DF888F74DD434D1",
+    "wallet": 0,
     "isDistributor": false
   },
   {
-    "username": "andi",
+    "username": "supermarket",
+    "id": 0,
+    "email": "test@test.com",
+    "password": "EF7797E13D3A75526946A3BCF00DAEC9FC9C9C4D51DDC7CC5DF888F74DD434D1",
+    "wallet": 0,
+    "isDistributor": true
+  },
+  {
+    "username": "supermarket",
     "id": 1,
-    "name": "hehehehe"
+    "name": "Banana",
+    "description": "A humble banana.",
+    "metadata": {
+      "weight": "4 oz",
+      "color": "yellow"
+    },
+    "price": 1,
+    "inventoryCount": 50,
+    "salesCount": 10,
+    "sales": [
+      {
+        "timestamp": 1595696110,
+        "quantity": 6
+      },
+      {
+        "timestamp": 1595696417,
+        "quantity": 4
+      }
+    ],
+    "reviews": [
+      {
+        "reviewer": "andi",
+        "stars": 4,
+        "timestamp": 1595696110,
+        "text": "Adequately yellow, but could be more tasty."
+      }
+    ]
   }
 ]
