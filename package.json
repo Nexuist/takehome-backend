@@ -1,0 +1,18 @@
+{
+  "scripts": {
+    "test": "jest"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/?(*.)+(spec|test).js?(x)"
+    ]
+  },
+  "devDependencies": {
+    "jest": "^23.0.0",
+    "jest-cli": "^24.7.1"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.437.0"
+  }
+}
