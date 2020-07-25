@@ -1,17 +1,44 @@
 "use strict";
+const crypto = require("crypto");
+const utils = require("../utils");
 
-let utils = require("../utils");
-
-module.exports.signup = async (event) => {
-  await utils.createUser("boo", "pfeiffer");
-  return {
-    statusCode: 200,
-    body: JSON.stringify(
-      {
-        message: "Go Serverless v1.0! Your function executed successfully!",
+let signup = async (event) => {
+  let { username, email, password } = event.validatedKeys;
+  // NOTE: it's debatable whether SHA-256 is a good password hashing algorithm, but this is a tech demo anyways
+  const hashedPassword = crypto
+    .createHash("sha256")
+    .update(password)
+    .digest("hex");
+  try {
+    await utils.dynamo("put", {
+      Item: {
+        username,
+        id: 0,
+        password: hashedPassword,
+        email,
+        wallet: 0,
+        isDistributor: false,
       },
-      null,
-      2
-    ),
-  };
+      ConditionExpression: "attribute_not_exists(username)",
+    });
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        success: true,
+      }),
+    };
+  } catch (err) {
+    if (err == "ConditionalCheckFailedException")
+      return utils.customFailResponse("Username is taken", 400);
+    return utils.customFailResponse("Server error");
+  }
 };
+
+module.exports.signup = utils.validateRequestBody(
+  {
+    username: "string",
+    email: "string",
+    password: "string",
+  },
+  signup
+);
