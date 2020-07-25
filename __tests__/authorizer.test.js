@@ -1,16 +1,8 @@
-const AWS = require("aws-sdk");
+const base = require("./base");
 const utils = require("../utils");
 
-const DynamoParams = {
-  apiVersion: "2012-10-08",
-  region: "us-east-1",
-  endpoint: "http://localhost:8000",
-};
-const DDB = new AWS.DynamoDB(DynamoParams);
-const DDC = new AWS.DynamoDB.DocumentClient(DynamoParams);
-
 beforeAll(async () => {
-  utils.DynamoDocumentClient = DDC;
+  utils.DynamoDocumentClient = base.DDC;
 });
 
 describe("user authenticator", () => {

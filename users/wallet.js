@@ -5,8 +5,8 @@ const utils = require("../utils");
 let updateWallet = async (event) => {
   let { value, password } = event.validatedKeys;
   let { username } = event.pathParameters;
-  if (!utils.authorizeUser(username, password))
-    return utils.customFailResponse("Authorization failed");
+  if ((await utils.authorizeUser(username, password)) == false)
+    return utils.customFailResponse("Authorization failed", 401);
   try {
     await utils.dynamo("update", {
       Key: {
