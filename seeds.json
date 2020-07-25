@@ -3,7 +3,7 @@
     "username": "andi",
     "id": 0,
     "email": "test@test.com",
-    "password": "EF7797E13D3A75526946A3BCF00DAEC9FC9C9C4D51DDC7CC5DF888F74DD434D1",
+    "password": "ef7797e13d3a75526946a3bcf00daec9fc9c9c4d51ddc7cc5df888f74dd434d1",
     "wallet": 0,
     "isDistributor": false
   },
@@ -11,7 +11,7 @@
     "username": "supermarket",
     "id": 0,
     "email": "test@test.com",
-    "password": "EF7797E13D3A75526946A3BCF00DAEC9FC9C9C4D51DDC7CC5DF888F74DD434D1",
+    "password": "ef7797e13d3a75526946a3bcf00daec9fc9c9c4d51ddc7cc5df888f74dd434d1",
     "wallet": 0,
     "isDistributor": true
   },

@@ -1,4 +1,5 @@
 const AWS = require("aws-sdk");
+const crypto = require("crypto");
 
 let DynamoDocumentClient = new AWS.DynamoDB.DocumentClient({
   apiVersion: "2012-10-08",
@@ -38,9 +39,26 @@ let validateRequestBody = (keys, callback) => {
   };
 };
 
+let authorizeUser = async (username, password) => {
+  let req = await dynamo("get", {
+    Key: {
+      username,
+      id: 0,
+    },
+  });
+  if (!req.Item) return false; // no such user exists
+  let desiredPassword = req.Item.password;
+  let actualPassword = crypto
+    .createHash("sha256")
+    .update(password)
+    .digest("hex");
+  return desiredPassword == actualPassword;
+};
+
 module.exports = {
   DynamoDocumentClient,
   dynamo,
   customFailResponse,
   validateRequestBody,
+  authorizeUser,
 };
