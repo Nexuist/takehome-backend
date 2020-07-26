@@ -1,7 +1,7 @@
 const base = require("./base");
 const utils = require("../utils");
 
-let handler = require("../products/updateProduct");
+let handler = require("../products/update");
 const { dynamo } = require("../utils");
 
 let call = async (json, pathParameters) =>

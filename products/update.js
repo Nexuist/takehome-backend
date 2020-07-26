@@ -11,7 +11,6 @@ let updateProduct = async (event) => {
   });
   if (!product.Item)
     return utils.customFailResponse("Product does not exist", 400);
-
   try {
     await utils.dynamo("update", {
       Key: {

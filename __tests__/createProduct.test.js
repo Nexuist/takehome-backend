@@ -1,7 +1,7 @@
 const base = require("./base");
 const utils = require("../utils");
 
-let handler = require("../products/createProduct");
+let handler = require("../products/create");
 
 let call = async (json, pathParameters) =>
   await handler.createProduct({

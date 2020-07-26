@@ -1,7 +1,7 @@
 const base = require("./base");
 const utils = require("../utils");
 
-let handler = require("../products/getProducts");
+let handler = require("../products/get");
 
 beforeAll(async () => {
   utils.DynamoDocumentClient = base.DDC;
@@ -17,9 +17,6 @@ describe("get a list of products", () => {
   });
   it("succeeds", () => {
     expect(result).toHaveProperty("statusCode", 200);
-  });
-  it("contains three products", () => {
-    expect(body.products.length).toBe(3);
   });
   it("does not include the actual user account as part of the products", () => {
     expect(body.products[0]).not.toHaveProperty("password", expect.anything());
