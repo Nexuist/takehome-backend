@@ -28,7 +28,7 @@ let signup = async (event) => {
       }),
     };
   } catch (err) {
-    if (err == "ConditionalCheckFailedException")
+    if (err.code == "ConditionalCheckFailedException")
       return utils.customFailResponse("Username is taken", 400);
     return utils.customFailResponse("Server error");
   }

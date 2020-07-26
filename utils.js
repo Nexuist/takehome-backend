@@ -55,10 +55,17 @@ let authorizeUser = async (username, password) => {
   return desiredPassword == actualPassword;
 };
 
+// For testing only
+let deleteKey = async (username, id) =>
+  await dynamo("delete", {
+    Key: { username, id },
+  });
+
 module.exports = {
   DynamoDocumentClient,
   dynamo,
   customFailResponse,
   validateRequestBody,
   authorizeUser,
+  deleteKey,
 };

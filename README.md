@@ -3,15 +3,15 @@
 ## For both users/distributors
 
 - POST /users/signup
-- POST /users/:name/wallet
+- POST /users/:username/wallet
 
 ## For distributors
 
-- POST /products/:name
-- POST /products/:name/:id/:key
+- POST /products/:username
+- POST /products/:username/:id/:key
 
 ## For users
 
-- GET /products/:name
-- POST /products/:name/:id/buy
-- POST /products/:name/:id/review
+- GET /products/:username
+- POST /products/:username/:id/buy
+- POST /products/:username/:id/review

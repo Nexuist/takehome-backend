@@ -28,7 +28,7 @@ let updateWallet = async (event) => {
       }),
     };
   } catch (err) {
-    return utils.customFailResponse("Server error");
+    return utils.customFailResponse("Server error", 500);
   }
 };
 

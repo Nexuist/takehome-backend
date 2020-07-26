@@ -7,18 +7,8 @@ let call = async (json) => await handler.signup({ body: JSON.stringify(json) });
 // delete any keys belonging to these tests
 beforeAll(async () => {
   utils.DynamoDocumentClient = base.DDC;
-  await utils.dynamo("delete", {
-    Key: {
-      username: "andi2",
-      id: 0,
-    },
-  });
-  await utils.dynamo("delete", {
-    Key: {
-      username: "andi3",
-      id: 0,
-    },
-  });
+  await utils.deleteKey("andi2", 0);
+  await utils.deleteKey("andi3", 0);
 });
 
 describe("signup", () => {
