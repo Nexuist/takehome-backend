@@ -52,22 +52,6 @@ let validateRequestBody = (keys, callback) => {
   };
 };
 
-// let authorizeUser = async (username, password) => {
-//   let req = await dynamo("get", {
-//     Key: {
-//       username,
-//       id: 0,
-//     },
-//   });
-//   if (!req.Item) return false; // no such user exists
-//   let desiredPassword = req.Item.password;
-//   let actualPassword = crypto
-//     .createHash("sha256")
-//     .update(password)
-//     .digest("hex");
-//   return desiredPassword == actualPassword;
-// };
-
 let ensureUser = (callback) => async (event) => {
   let { username, password } = event.validatedKeys;
   let req = await dynamo("get", {
@@ -113,7 +97,6 @@ module.exports = {
   customFailResponse,
   successResponse,
   validateRequestBody,
-  // authorizeUser,
   ensureUser,
   ensureProduct,
   deleteKey,
