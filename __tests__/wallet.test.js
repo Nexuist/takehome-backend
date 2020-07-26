@@ -15,18 +15,17 @@ beforeAll(async () => {
 
 describe("wallet update", () => {
   it("updates the wallet value", async () => {
-    let attempt = await call(
-      {
-        password: "blockchain",
-        value: 500,
-      },
-      { username: "andi" }
-    );
+    let attempt = await call({
+      username: "andi",
+      password: "blockchain",
+      value: 500,
+    });
     expect(attempt).toHaveProperty("statusCode", 200);
   });
   it("won't let you update a wallet without the correct password", async () => {
     let attempt = await call(
       {
+        username: "andi",
         password: "blockerchain",
         value: 500,
       },

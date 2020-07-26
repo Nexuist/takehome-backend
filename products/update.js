@@ -2,20 +2,13 @@
 const utils = require("../utils");
 
 let updateProduct = async (event) => {
-  let { key, value, password } = event.validatedKeys;
-  let { username, id } = event.pathParameters;
-  if ((await utils.authorizeUser(username, password)) == false)
-    return utils.customFailResponse("Authorization failed", 401);
-  let product = await utils.dynamo("get", {
-    Key: { username, id },
-  });
-  if (!product.Item)
-    return utils.customFailResponse("Product does not exist", 400);
+  let { key, value } = event.validatedKeys;
+  let product = event.productObject;
   try {
     await utils.dynamo("update", {
       Key: {
-        username,
-        id,
+        username: product.username,
+        id: product.id,
       },
       UpdateExpression: "SET #key = :value",
       ExpressionAttributeNames: {
@@ -25,12 +18,7 @@ let updateProduct = async (event) => {
         ":value": value,
       },
     });
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        success: true,
-      }),
-    };
+    return utils.successResponse();
   } catch (err) {
     return utils.customFailResponse("Server error", 500);
   }
@@ -38,6 +26,7 @@ let updateProduct = async (event) => {
 
 module.exports.updateProduct = utils.validateRequestBody(
   {
+    username: "string",
     password: "string",
     key: "string",
     value: (val, body) => {
@@ -56,5 +45,5 @@ module.exports.updateProduct = utils.validateRequestBody(
       return true;
     },
   },
-  updateProduct
+  utils.ensureUser(utils.ensureProduct(updateProduct))
 );

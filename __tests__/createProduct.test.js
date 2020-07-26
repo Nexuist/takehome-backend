@@ -18,13 +18,14 @@ describe("create product", () => {
   it("can create a product", async () => {
     let attempt = await call(
       {
+        username: "supermarket",
         password: "blockchain",
         id: 2,
         name: "Pear",
         description: "A simple pear.",
         price: 2,
       },
-      { username: "supermarket" }
+      { distributor: "supermarket" }
     );
     expect(attempt).toHaveProperty("statusCode", 200);
     let product = await utils.dynamo("get", {
@@ -38,26 +39,28 @@ describe("create product", () => {
   it("won't let you create a product without the correct password", async () => {
     let attempt = await call(
       {
+        username: "supermarket",
         password: "blockerchain",
         id: 3,
         name: "Orange",
         description: "orange",
         price: 3,
       },
-      { username: "supermarket" }
+      { distributor: "supermarket" }
     );
     expect(attempt).toHaveProperty("statusCode", 401);
   });
   it("won't let you create a product unless you are a distributor", async () => {
     let attempt = await call(
       {
+        username: "andi",
         password: "blockchain",
         id: 1,
         name: "Orange",
         description: "orange",
         price: 3,
       },
-      { username: "andi" }
+      { distributor: "andi" }
     );
     expect(attempt).toHaveProperty("statusCode", 403);
   });

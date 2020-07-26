@@ -52,20 +52,53 @@ let validateRequestBody = (keys, callback) => {
   };
 };
 
-let authorizeUser = async (username, password) => {
+// let authorizeUser = async (username, password) => {
+//   let req = await dynamo("get", {
+//     Key: {
+//       username,
+//       id: 0,
+//     },
+//   });
+//   if (!req.Item) return false; // no such user exists
+//   let desiredPassword = req.Item.password;
+//   let actualPassword = crypto
+//     .createHash("sha256")
+//     .update(password)
+//     .digest("hex");
+//   return desiredPassword == actualPassword;
+// };
+
+let ensureUser = (callback) => async (event) => {
+  let { username, password } = event.validatedKeys;
   let req = await dynamo("get", {
     Key: {
       username,
       id: 0,
     },
   });
-  if (!req.Item) return false; // no such user exists
+  if (!req.Item) return customFailResponse("No such user exists", 404);
   let desiredPassword = req.Item.password;
   let actualPassword = crypto
     .createHash("sha256")
     .update(password)
     .digest("hex");
-  return desiredPassword == actualPassword;
+  if (desiredPassword != actualPassword)
+    return customFailResponse("Authorization failed", 401);
+  event.userObject = req.Item;
+  return callback(event);
+};
+
+let ensureProduct = (callback) => async (event) => {
+  let { distributor, id } = event.pathParameters;
+  let req = await dynamo("get", {
+    Key: {
+      username: distributor,
+      id,
+    },
+  });
+  if (!req.Item) return customFailResponse("No such product exists", 404);
+  event.productObject = req.Item;
+  return callback(event);
 };
 
 // For testing only
@@ -80,6 +113,8 @@ module.exports = {
   customFailResponse,
   successResponse,
   validateRequestBody,
-  authorizeUser,
+  // authorizeUser,
+  ensureUser,
+  ensureProduct,
   deleteKey,
 };

@@ -11,7 +11,7 @@ let result, body;
 describe("get a list of products", () => {
   beforeAll(async () => {
     result = await handler.getProducts({
-      pathParameters: { username: "supermarket" },
+      pathParameters: { distributor: "supermarket" },
     });
     body = JSON.parse(result.body);
   });
@@ -30,7 +30,7 @@ describe("get a list of products", () => {
   });
   it("will not retrieve products for non-distributor accounts", async () => {
     let result = await handler.getProducts({
-      pathParameters: { username: "andi" },
+      pathParameters: { distributor: "andi" },
     });
     expect(result).toHaveProperty("statusCode", 400);
   });

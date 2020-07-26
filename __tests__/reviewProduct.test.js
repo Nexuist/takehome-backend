@@ -17,13 +17,13 @@ describe("review a product", () => {
   it("can review a product", async () => {
     let attempt = await call(
       {
-        reviewerUsername: "andi",
+        username: "andi",
         password: "blockchain",
         text: "a good review",
         stars: 3,
       },
       {
-        username: "supermarket",
+        distributor: "supermarket",
         id: 1,
       }
     );
@@ -40,13 +40,13 @@ describe("review a product", () => {
     expect(
       await call(
         {
-          reviewerUsername: "andi",
+          username: "andi",
           password: "blockchain",
           text: "a good review",
           stars: 3,
         },
-        { username: "supermarket", id: 5 }
+        { distributor: "supermarket", id: 5 }
       )
-    ).toHaveProperty("statusCode", 400);
+    ).toHaveProperty("statusCode", 404);
   });
 });

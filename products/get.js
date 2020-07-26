@@ -2,7 +2,7 @@
 const utils = require("../utils");
 
 let getProducts = async (event) => {
-  let { username } = event.pathParameters;
+  let { distributor } = event.pathParameters;
   try {
     let query = await utils.dynamo("query", {
       KeyConditionExpression: "#username = :username",
@@ -10,7 +10,7 @@ let getProducts = async (event) => {
         "#username": "username",
       },
       ExpressionAttributeValues: {
-        ":username": username,
+        ":username": distributor,
       },
     });
     if (query.Items.length == 0)
@@ -28,13 +28,7 @@ let getProducts = async (event) => {
       delete x.sales;
       return x;
     });
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        success: true,
-        products,
-      }),
-    };
+    return utils.successResponse({ products });
   } catch (err) {
     return utils.customFailResponse("Server error", 500);
   }

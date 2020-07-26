@@ -2,21 +2,9 @@
 const utils = require("../utils");
 
 let buyProduct = async (event) => {
-  let { buyerUsername, password, quantity } = event.validatedKeys;
-  let { username, id } = event.pathParameters;
-  if ((await utils.authorizeUser(buyerUsername, password)) == false)
-    return utils.customFailResponse("Authorization failed", 401);
-  let product = await utils.dynamo("get", {
-    Key: { username, id },
-  });
-  if (!product.Item)
-    return utils.customFailResponse("Product does not exist", 400);
-  product = product.Item;
-  let buyer = (
-    await utils.dynamo("get", {
-      Key: { username: buyerUsername, id: 0 },
-    })
-  ).Item;
+  let { quantity } = event.validatedKeys;
+  let buyer = event.userObject;
+  let product = event.productObject;
   let cost = product.price * quantity;
   if (cost > buyer.wallet)
     return utils.customFailResponse("You cannot afford this product", 400);
@@ -29,7 +17,7 @@ let buyProduct = async (event) => {
           Update: {
             TableName: "takehome",
             Key: {
-              username: buyerUsername,
+              username: buyer.username,
               id: 0,
             },
             UpdateExpression: "SET #wallet = :newWallet",
@@ -41,8 +29,8 @@ let buyProduct = async (event) => {
           Update: {
             TableName: "takehome",
             Key: {
-              username,
-              id,
+              username: product.username,
+              id: product.id,
             },
             UpdateExpression:
               "SET #salesCount = :newSalesCount, #inventoryCount = :newInventoryCount, #sales = list_append(#sales, :newSale)",
@@ -67,18 +55,16 @@ let buyProduct = async (event) => {
     });
     return utils.successResponse();
   } catch (err) {
+    console.log(err);
     return utils.customFailResponse("Server error", 500);
   }
 };
 
-// TODO: utils.successResponse
-// TODO: utils.authenticateUser middleware
-// TODO: utils.ensureProduct middleware
 module.exports.buyProduct = utils.validateRequestBody(
   {
-    buyerUsername: "string",
+    username: "string",
     password: "string",
     quantity: "number",
   },
-  buyProduct
+  utils.ensureUser(utils.ensureProduct(buyProduct))
 );

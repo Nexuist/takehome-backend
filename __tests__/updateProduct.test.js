@@ -36,12 +36,13 @@ let get = async () =>
 let update = async (key, value) =>
   await call(
     {
+      username: "supermarket",
       password: "blockchain",
       key,
       value,
     },
     {
-      username: "supermarket",
+      distributor: "supermarket",
       id: 3,
     }
   );

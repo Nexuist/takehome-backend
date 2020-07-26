@@ -2,20 +2,14 @@
 const utils = require("../utils");
 
 let reviewProduct = async (event) => {
-  let { reviewerUsername, password, stars, text } = event.validatedKeys;
-  let { username, id } = event.pathParameters;
-  if ((await utils.authorizeUser(reviewerUsername, password)) == false)
-    return utils.customFailResponse("Authorization failed", 401);
-  let product = await utils.dynamo("get", {
-    Key: { username, id },
-  });
-  if (!product.Item)
-    return utils.customFailResponse("Product does not exist", 400);
+  let { stars, text } = event.validatedKeys;
+  let reviewer = event.userObject;
+  let product = event.productObject;
   try {
     await utils.dynamo("update", {
       Key: {
-        username,
-        id,
+        username: product.username,
+        id: product.id,
       },
       UpdateExpression: "SET #reviews = list_append(#reviews, :review)",
       ExpressionAttributeNames: {
@@ -24,7 +18,7 @@ let reviewProduct = async (event) => {
       ExpressionAttributeValues: {
         ":review": [
           {
-            reviewerUsername,
+            reviewerUsername: reviewer.username,
             stars,
             text,
             timestamp: +new Date(),
@@ -32,12 +26,7 @@ let reviewProduct = async (event) => {
         ],
       },
     });
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        success: true,
-      }),
-    };
+    return utils.successResponse();
   } catch (err) {
     return utils.customFailResponse("Server error", 500);
   }
@@ -45,10 +34,10 @@ let reviewProduct = async (event) => {
 
 module.exports.reviewProduct = utils.validateRequestBody(
   {
-    reviewerUsername: "string",
+    username: "string",
     password: "string",
     stars: (val, body) => val >= 0 && val < 6,
     text: "string",
   },
-  reviewProduct
+  utils.ensureUser(utils.ensureProduct(reviewProduct))
 );

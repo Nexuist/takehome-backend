@@ -3,10 +3,7 @@ const crypto = require("crypto");
 const utils = require("../utils");
 
 let updateWallet = async (event) => {
-  let { value, password } = event.validatedKeys;
-  let { username } = event.pathParameters;
-  if ((await utils.authorizeUser(username, password)) == false)
-    return utils.customFailResponse("Authorization failed", 401);
+  let { username, value } = event.validatedKeys;
   try {
     await utils.dynamo("update", {
       Key: {
@@ -21,12 +18,7 @@ let updateWallet = async (event) => {
         ":value": value,
       },
     });
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        success: true,
-      }),
-    };
+    return utils.successResponse();
   } catch (err) {
     return utils.customFailResponse("Server error", 500);
   }
@@ -34,8 +26,9 @@ let updateWallet = async (event) => {
 
 module.exports.updateWallet = utils.validateRequestBody(
   {
+    username: "string",
     password: "string",
     value: "number",
   },
-  updateWallet
+  utils.ensureUser(updateWallet)
 );

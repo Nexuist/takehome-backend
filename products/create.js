@@ -2,17 +2,8 @@
 const utils = require("../utils");
 
 let createProduct = async (event) => {
-  let { password, id, name, description, price } = event.validatedKeys;
-  let { username } = event.pathParameters;
-  if ((await utils.authorizeUser(username, password)) == false)
-    return utils.customFailResponse("Authorization failed", 401);
-  let user = await utils.dynamo("get", {
-    Key: {
-      username,
-      id: 0,
-    },
-  });
-  if (!user.Item.isDistributor)
+  let { name, id, description, price } = event.validatedKeys;
+  if (!event.userObject.isDistributor)
     return utils.customFailResponse(
       "You cannot create products because you are not a distributor",
       403
@@ -20,7 +11,7 @@ let createProduct = async (event) => {
   try {
     await utils.dynamo("put", {
       Item: {
-        username,
+        username: event.userObject.username,
         id,
         name,
         description,
@@ -34,13 +25,9 @@ let createProduct = async (event) => {
       },
       ConditionExpression: "attribute_not_exists(id)",
     });
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        success: true,
-      }),
-    };
+    return utils.successResponse();
   } catch (err) {
+    console.log(err);
     if (err.code == "ConditionalCheckFailedException")
       return utils.customFailResponse("Product ID is taken", 400);
     return utils.customFailResponse("Server error", 500);
@@ -49,11 +36,12 @@ let createProduct = async (event) => {
 
 module.exports.createProduct = utils.validateRequestBody(
   {
+    username: "string",
     password: "string",
     id: "number",
     name: "string",
     description: "string",
     price: "number",
   },
-  createProduct
+  utils.ensureUser(createProduct)
 );

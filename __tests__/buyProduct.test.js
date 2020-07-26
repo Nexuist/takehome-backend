@@ -12,12 +12,12 @@ let call = async (json, pathParameters) =>
 let buy = async (quantity) =>
   await call(
     {
-      buyerUsername: "andi",
+      username: "andi",
       password: "blockchain",
       quantity,
     },
     {
-      username: "supermarket",
+      distributor: "supermarket",
       id: 1,
     }
   );

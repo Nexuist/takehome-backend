@@ -21,12 +21,7 @@ let signup = async (event) => {
       },
       ConditionExpression: "attribute_not_exists(username)",
     });
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        success: true,
-      }),
-    };
+    return utils.successResponse();
   } catch (err) {
     if (err.code == "ConditionalCheckFailedException")
       return utils.customFailResponse("Username is taken", 400);
