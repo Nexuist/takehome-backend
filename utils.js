@@ -31,7 +31,15 @@ let validateRequestBody = (keys, callback) => {
       if (!(key in body)) return failResponse;
       let desiredType = keys[key];
       let actualType = typeof body[key];
-      if (actualType != desiredType) return failResponse;
+      if (typeof desiredType == "function") {
+        // if the given type is a function use it to validate the body key
+        let validator = desiredType;
+        // provide the entire body object as context for the validator
+        let result = validator(body[key], body);
+        if (result == false) return failResponse;
+      } else {
+        if (actualType != desiredType) return failResponse;
+      }
     }
     event.validatedKeys = body;
     // everything checks out

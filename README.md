@@ -8,7 +8,7 @@
 ## For distributors
 
 - POST /products/:username
-- POST /products/:username/:id/:key
+- POST /products/:username/:id/update
 
 ## For users
 
