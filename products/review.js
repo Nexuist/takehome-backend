@@ -4,7 +4,7 @@ const utils = require("../utils");
 let reviewProduct = async (event) => {
   let { reviewerUsername, password, stars, text } = event.validatedKeys;
   let { username, id } = event.pathParameters;
-  if ((await utils.authorizeUser(username, password)) == false)
+  if ((await utils.authorizeUser(reviewerUsername, password)) == false)
     return utils.customFailResponse("Authorization failed", 401);
   let product = await utils.dynamo("get", {
     Key: { username, id },
@@ -39,7 +39,6 @@ let reviewProduct = async (event) => {
       }),
     };
   } catch (err) {
-    console.log(err);
     return utils.customFailResponse("Server error", 500);
   }
 };

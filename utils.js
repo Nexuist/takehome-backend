@@ -17,6 +17,11 @@ let customFailResponse = (reason, statusCode = 400) => ({
   body: JSON.stringify({ success: false, reason }),
 });
 
+let successResponse = (body) => ({
+  statusCode: 200,
+  body: JSON.stringify({ success: true, ...body }),
+});
+
 let validateRequestBody = (keys, callback) => {
   let failResponse = customFailResponse("Required keys are missing or invalid");
   return async (event) => {
@@ -73,6 +78,7 @@ module.exports = {
   DynamoDocumentClient,
   dynamo,
   customFailResponse,
+  successResponse,
   validateRequestBody,
   authorizeUser,
   deleteKey,

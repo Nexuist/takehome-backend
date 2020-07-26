@@ -28,11 +28,23 @@ describe("review a product", () => {
       }
     );
     expect(attempt).toHaveProperty("statusCode", 200);
+    let product = await utils.dynamo("get", {
+      Key: {
+        username: "supermarket",
+        id: 1,
+      },
+    });
+    expect(product.Item.reviews.length).toBeGreaterThanOrEqual(2);
   });
-  it.skip("won't let you review a non-existent product", async () => {
+  it("won't let you review a non-existent product", async () => {
     expect(
       await call(
-        { password: "blockchain", key: "name", value: "Strawberry" },
+        {
+          reviewerUsername: "andi",
+          password: "blockchain",
+          text: "a good review",
+          stars: 3,
+        },
         { username: "supermarket", id: 5 }
       )
     ).toHaveProperty("statusCode", 400);
