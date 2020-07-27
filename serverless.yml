@@ -33,6 +33,10 @@ functions:
           parameters:
             paths:
               distributor: true
+  myProducts:
+    handler: products/mine.myProducts
+    events:
+      - http: POST products/mine
   createProduct:
     handler: products/create.createProduct
     events:

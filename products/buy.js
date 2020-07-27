@@ -8,6 +8,8 @@ let buyProduct = async (event) => {
   let cost = product.price * quantity;
   if (cost > buyer.wallet)
     return utils.customFailResponse("You cannot afford this product", 400);
+  if (quantity > product.inventoryCount)
+    return utils.customFailResponse("There is not enough of this product", 400);
   try {
     // Run as a transaction so if any part fails all changes are rejected
     // Prevents customers from losing money without also receiving the product

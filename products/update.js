@@ -4,6 +4,8 @@ const utils = require("../utils");
 let updateProduct = async (event) => {
   let { key, value } = event.validatedKeys;
   let product = event.productObject;
+  if (!event.productObject.username == event.userObject.username)
+    return utils.customFailResponse("You cannot update this product", 401);
   try {
     await utils.dynamo("update", {
       Key: {

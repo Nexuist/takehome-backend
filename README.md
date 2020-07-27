@@ -7,6 +7,7 @@
 
 ## For distributors
 
+- POST /products/mine
 - POST /products/:distributor
 - POST /products/:distributor/:id/update
 
