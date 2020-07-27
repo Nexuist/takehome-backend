@@ -22,23 +22,8 @@ let buy = async (quantity) =>
     }
   );
 
-// update the buyer's wallet value
 beforeAll(async () => {
   utils.DynamoDocumentClient = base.DDC;
-  let value = 25;
-  await utils.dynamo("update", {
-    Key: {
-      username: "andi",
-      id: 0,
-    },
-    UpdateExpression: "SET #wallet = :value",
-    ExpressionAttributeNames: {
-      "#wallet": "wallet",
-    },
-    ExpressionAttributeValues: {
-      ":value": value,
-    },
-  });
 });
 
 let result;
@@ -46,6 +31,35 @@ let prePurchaseProduct;
 let product;
 describe("buy a product", () => {
   beforeAll(async () => {
+    // reset user wallet
+    await utils.dynamo("update", {
+      Key: {
+        username: "andi",
+        id: 0,
+      },
+      UpdateExpression: "SET #wallet = :value",
+      ExpressionAttributeNames: {
+        "#wallet": "wallet",
+      },
+      ExpressionAttributeValues: {
+        ":value": 25,
+      },
+    });
+    // reset product inventoryCount
+    await utils.dynamo("update", {
+      Key: {
+        username: "supermarket",
+        id: 1,
+      },
+      UpdateExpression: "SET #inventoryCount = :value",
+      ExpressionAttributeNames: {
+        "#inventoryCount": "inventoryCount",
+      },
+      ExpressionAttributeValues: {
+        ":value": 25,
+      },
+    });
+
     prePurchaseProduct = (
       await utils.dynamo("get", {
         Key: {
@@ -64,8 +78,9 @@ describe("buy a product", () => {
       })
     ).Item;
   });
-  it("can buy a product", () =>
-    expect(result).toHaveProperty("statusCode", 200));
+  it("can buy a product", () => {
+    expect(result).toHaveProperty("statusCode", 200);
+  });
   it("will decrease the buyer's wallet correctly", async () => {
     let buyer = (
       await utils.dynamo("get", {

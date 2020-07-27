@@ -15,6 +15,11 @@ provider:
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/takehome"
 
 functions:
+  getUser:
+    handler: /users/getUser.getUser
+    events:
+      - http: POST users/me
+        cors: true
   signup:
     handler: users/signup.signup
     events:
