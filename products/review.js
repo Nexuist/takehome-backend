@@ -2,6 +2,7 @@
 const utils = require("../utils");
 
 let reviewProduct = async (event) => {
+  console.log("made it this far!!");
   let { stars, text } = event.validatedKeys;
   let reviewer = event.userObject;
   let product = event.productObject;

@@ -25,7 +25,8 @@ let signup = async (event) => {
   } catch (err) {
     if (err.code == "ConditionalCheckFailedException")
       return utils.customFailResponse("Username is taken", 400);
-    return utils.customFailResponse("Server error");
+    console.log(err);
+    return utils.customFailResponse("Server error", 500);
   }
 };
 

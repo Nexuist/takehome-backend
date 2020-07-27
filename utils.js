@@ -74,10 +74,12 @@ let ensureUser = (callback) => async (event) => {
 
 let ensureProduct = (callback) => async (event) => {
   let { distributor, id } = event.pathParameters;
+  if (parseInt(id) == NaN)
+    return customFailResponse("id must be an integer", 400);
   let req = await dynamo("get", {
     Key: {
       username: distributor,
-      id,
+      id: +id,
     },
   });
   if (!req.Item) return customFailResponse("No such product exists", 404);

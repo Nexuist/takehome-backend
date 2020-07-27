@@ -3,48 +3,76 @@ service: takehome
 provider:
   name: aws
   runtime: nodejs12.x
-
-# you can overwrite defaults here
-#  stage: dev
-#  region: us-east-1
-
-# you can add statements to the Lambda function's IAM Role here
-#  iamRoleStatements:
-#    - Effect: "Allow"
-#      Action:
-#        - "s3:ListBucket"
-#      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
-#    - Effect: "Allow"
-#      Action:
-#        - "s3:PutObject"
-#      Resource:
-#        Fn::Join:
-#          - ""
-#          - - "arn:aws:s3:::"
-#            - "Ref" : "ServerlessDeploymentBucket"
-#            - "/*"
-
-# you can define service wide environment variables here
-#  environment:
-#    variable1: value1
-
-# you can add packaging information here
-#package:
-#  include:
-#    - include-me.js
-#    - include-me-dir/**
-#  exclude:
-#    - exclude-me.js
-#    - exclude-me-dir/**
+  stage: dev
+  region: us-east-1
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/takehome"
 
 functions:
-  hello:
-    handler: handler.hello
+  signup:
+    handler: users/signup.signup
     events:
-      - http: GET helloworld
-#    Define function environment variables here
-#    environment:
-#      variable2: value2
+      - http: POST users/signup
+        cors: true
+  updateWallet:
+    handler: users/wallet.updateWallet
+    events:
+      - http: POST users/updateWallet
+        cors: true
+  getProducts:
+    handler: products/get.getProducts
+    events:
+      - http: GET products/{distributor}
+        request:
+          parameters:
+            paths:
+              distributor: true
+  createProduct:
+    handler: products/create.createProduct
+    events:
+      - http: POST products/{distributor}
+        request:
+          parameters:
+            paths:
+              distributor: true
+  updateProduct:
+    handler: products/update.updateProduct
+    events:
+      - http: POST products/{distributor}/{id}/update
+        request:
+          parameters:
+            paths:
+              distributor: true
+              id: true
+  buyProduct:
+    handler: products/buy.buyProduct
+    events:
+      - http: POST products/{distributor}/{id}/buy
+        request:
+          parameters:
+            paths:
+              distributor: true
+              id: true
+  reviewProduct:
+    handler: products/review.reviewProduct
+    events:
+      - http: POST products/{distributor}/{id}/review
+        request:
+          parameters:
+            paths:
+              distributor: true
+              id: true
+
+package:
+  exclude:
+    - node_modules/**
+    - .dynamodb/**
 
 resources: # CloudFormation template syntax
   Resources:
