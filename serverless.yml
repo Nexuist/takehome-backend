@@ -16,7 +16,7 @@ provider:
 
 functions:
   getUser:
-    handler: /users/getUser.getUser
+    handler: users/get.getUser
     events:
       - http: POST users/me
         cors: true
