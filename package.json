@@ -13,6 +13,6 @@
     "jest-cli": "^24.7.1"
   },
   "dependencies": {
-    "aws-sdk": "^2.437.0"
+    "aws-sdk": "^2.814.0"
   }
 }
